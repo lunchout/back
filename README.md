@@ -1,3 +1,5 @@
+<div align="center"><img src="./documentation/lunchout-logo.svg" /></div>
+
 # Lunch-Out Backend
 
 This is a recommendation app for lunch places done as a technical exercise for a hiring process.
