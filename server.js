@@ -30,8 +30,6 @@ app.post('/login', cors(corsOptions), (req, res) => {
         }
     );
 
-    console.log("yo");
-
     res.send(JSON.stringify({...user, token}));
 });
 
