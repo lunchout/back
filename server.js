@@ -1,63 +1,70 @@
-const express = require('express');
-var session = require("express-session");
-var cors = require('cors')
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-
+const cors = require('cors');
+const request = require('request');
+const jwt = require('jsonwebtoken');
+const auth = require("./auth");
 
 require('dotenv').config();
 
-const app = express();
+const app = require('./init').init();
 const port = process.env.PORT || 8080;
 
-app.use(cors());
-app.use(express.json());
-app.use(passport.initialize());
-app.use(passport.session());
-
-var corsOptions = {
-    origin: '*',
-    // origin: 'https://*.kyng.be',
+const corsOptions = {
+    origin: app.get('env') === 'production' ? process.env.APP_URL : '*',
     optionsSuccessStatus: 200,
 }
 
-passport.use(new LocalStrategy(
-    (username, password, done) => {
-        User.findOne({ username: username }, (err, user) => {
-            if (err) {
-                return done(err);
-            }
-            if (!user) {
-                return done(null, false, { message: 'Incorrect username.' });
-            }
-            if (!user.validPassword(password)) {
-                return done(null, false, { message: 'Incorrect password.' });
-            }
+app.post('/login', cors(corsOptions), (req, res) => {
+    const {username, password} = req.body;
+    const users = process.env.APP_USERS.toUpperCase().split(',');
+    
+    if (!(users.includes(username.toUpperCase()))) res.status(400).send({error: 'User not found'});
+    if (password !== process.env.APP_PASSWORD) res.status(401).send({error: 'Incorrect password'});
 
-            return done(null, user);
+    const user = {username: username.toLowerCase()};
+
+    const token = jwt.sign(
+        user,
+        process.env.TOKEN_KEY,
+        {
+            expiresIn: "24h",
+        }
+    );
+
+    console.log("yo");
+
+    res.send(JSON.stringify({...user, token}));
+});
+
+app.post('/restaurants', auth, async (req, res) => {
+    const { location, range, cuisines, price } = req.body;
+
+    let params = "?term=restaurants";
+
+    params += `&latitude=${location.latitude}`;
+    params += `&longitude=${location.longitude}`;
+    params += `&radius=${range}`;
+    params += `&price=${price}`;
+
+    params += '&sort_by=rating';
+    params += '&limit=10';
+    
+    if (cuisines.length) {
+        params += '&categories='
+        cuisines.forEach((cuis, i) => {
+            if (i) params += ',';
+            params += cuis.taste;
         });
     }
-));
 
-passport.serializeUser((user, done) => {
-    done(null, user.id);
-});
+    request({
+        url: `${process.env.YELP_API_URL}/businesses/search${params}`,
+        headers: {
+            'Authorization': `Bearer ${process.env.YELP_API_KEY}`
+        }
+    }, (error, stream, yelpRes) => {
+        res.status(200).send(yelpRes);
+    })
 
-passport.deserializeUser((id, done) => {
-    User.findById(id, (err, user) => {
-        done(err, user);
-    });
-});
-
-app.post('/login',
-    passport.authenticate('local'),
-    (req, res) => {
-        res.redirect('/');
-    }
-);
-
-app.get('/restaurant', cors(corsOptions), (req, res) => {
-    res.send('Post successful');
 });
 
 app.listen((port), () => {

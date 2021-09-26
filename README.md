@@ -18,7 +18,7 @@ At [redacted] we love food, and we enjoy trying new places for lunch! Please hel
 - Authenticated (choose whichever methods seems safest to you)
 - Validate inputs as much as possible
 
-#### Inputs:
+### Inputs:
 
 - Localisation
 - Max distance from localisation
@@ -30,7 +30,7 @@ At [redacted] we love food, and we enjoy trying new places for lunch! Please hel
     - Klaas likes: [ Japanese, Belgian ]
     - Gaelle likes: [ Japanese, Lebanese ]
 
-#### Outputs:
+### Outputs:
 
 - List of 10 best restaurants / places to lunch given the inputs
 - Try to make it that the best matching restaurants come first, but you still allow suggestions for restaurants that match less

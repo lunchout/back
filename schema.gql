@@ -1,0 +1,8 @@
+type Attendee {
+   name: String!
+   tastes: [String!]
+}
+
+type Query {
+   allAttendees: [Attendee!]
+}

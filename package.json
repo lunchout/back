@@ -1,19 +1,30 @@
 {
-  "name": "kyng-backend",
-  "version": "1.0.0",
+  "name": "lunchout-backend",
+  "version": "0.1.0",
   "main": "index.js",
-  "repository": "git@github.com:lunchout/back.git",
+  "repository": "git@github.com:elroyK/kyng-backend.git",
   "author": "Christophe Leroy <kyngstudio@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
+    "discord.js": "^13.0.1",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
+    "jsonwebtoken": "^8.5.1",
     "passport": "^0.4.1",
-    "passport-local": "^1.0.0"
+    "passport-auth-token": "^1.0.1",
+    "passport-local": "^1.0.0",
+    "request": "^2.88.2"
+  },
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "NODE_ENV=production node server.js"
   },
   "engines": {
     "node": "16.6"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
   }
 }
