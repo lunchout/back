@@ -47,7 +47,7 @@ app.post('/restaurants', auth, async (req, res) => {
         res.status(400).send("Missing argument: price (comma separated list of 1,2,3 and 4).")
     } else if (!(location.hasOwnProperty("longitude") && location.hasOwnProperty("latitude"))) {
         res.status(400).send("Incorrect location. Location must be { longitude : x, latitude : y }.");
-    } else if (!Number.isInteger(range)) {
+    } else if (Number.isNaN(parseInt(range))) {
         res.status(400).send("Incorrect range. Range must be an integer.");
     } else if (!validatePrice(price)) {
         res.status(400).send("Incorrect price. Price must be comma separated list of 1,2,3 and 4.");
